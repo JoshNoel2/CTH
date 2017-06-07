@@ -1,0 +1,47 @@
+var version = "0.0.1"
+console.log("Running #CTH Version " + version);
+
+var canvas = document.getElementById("CTH");
+canvas.width = 1325;
+canvas.height = 600;
+var ctx = canvas.getContext("2d");
+
+var ended = false;
+
+var keysDown = {};
+
+addEventListener("keydown", function (e) {
+	keysDown[e.keyCode] = true;
+	if (e.keyCode == 32 || e.keyCode == 9) {
+		e.preventDefault();
+	}
+}, false);
+
+addEventListener("keyup", function (e) {
+	keysDown[e.keyCode] = false;
+}, false);
+
+var w = window;
+requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
+
+start();
+run();
+
+
+function run() {
+
+	if (!ended) {
+		update();
+	}
+	render();
+	removeObjects();
+	if (ended) {
+		if (keysDown[32]) {
+			keysDown[32] = false;
+			ended = false;
+			start();
+		}
+	}
+
+	requestAnimationFrame(run);
+}
