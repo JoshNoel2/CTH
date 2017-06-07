@@ -41,7 +41,7 @@ function generateTerrain(width, height) {
             }
         }
     }
-    //map = addMapEnd(map);
+    map = addMapEnd(map);
     readWholeMap(0, 0, map);
     console.log(map);
     console.log("Done!");
@@ -62,7 +62,7 @@ function addMapEnd(map) {
     for (var y = 0; y != map.length; y++) {
         for (var x = map[0].length - 2; x != map[0].length; x++) {
             if (map[y][x] == null) {
-                console.log(map);
+                // console.log(map);
                 map = addEndSectionToMap(map, x, y);
             }
         }
