@@ -4,6 +4,8 @@ class RenderedObject extends GameObject {
         this.sprite = sprite;
     }
     render() {
-        this.sprite.render(this.x - camerax, this.y - cameray, this.width, this.height);
+        if (this.sprite != null) {
+            this.sprite.render(this.x - camerax, this.y - cameray, this.width, this.height);
+        }
     }
 }

@@ -10,13 +10,15 @@ class Animation extends Sprite {
         this.y = y;
     }
     render(x, y, width, height) {
-        this.ticks += 1;
-        if (this.ticks >= this.ticksPerFrame) {
-            this.ticks = 0;
-            if (this.currentFrame < this.frames - 1) {
-                this.currentFrame += 1;
-            } else {
-                this.currentFrame = 0;
+        if (!ended) {
+            this.ticks += 1;
+            if (this.ticks >= this.ticksPerFrame) {
+                this.ticks = 0;
+                if (this.currentFrame < this.frames - 1) {
+                    this.currentFrame += 1;
+                } else {
+                    this.currentFrame = 0;
+                }
             }
         }
     	renderImage(this.image, this.width*this.currentFrame, this.y, this.width, this.height, x, y, width, height);

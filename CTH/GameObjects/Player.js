@@ -23,17 +23,17 @@ class Player extends MovingObject {
         if (keysDown[32] && this.shotDelay > 20) {
             this.shotDelay = 0;
             if (this.facing == "left") {
-                objects.push(new Projectile(this.x, this.y + this.height/2 - 24,
-                    new Animation("Graphics/Fire/Fire_Left.png", 64, 64, 5, 5, 0), -6, 0,));
+                entities.push(new Projectile(this.x, this.y + this.height/2 - 24, 48, 48,
+                    new Animation("Graphics/Fire/Fire_Left.png", 64, 64, 5, 5, 0), -6, 0, 6, true, false));
             } else if (this.facing == "right") {
-                objects.push(new Projectile(this.x + this.width/2, this.y + this.height/2 - 24,
-                    new Animation("Graphics/Fire/Fire_Right.png", 64, 64, 5, 5, 0), 6, 0));
+                entities.push(new Projectile(this.x + this.width/2, this.y + this.height/2 - 24, 48, 48,
+                    new Animation("Graphics/Fire/Fire_Right.png", 64, 64, 5, 5, 0), 6, 0, 6, true, false));
             } else if (this.facing == "up") {
-                objects.push(new Projectile(this.x + this.width/2 - 24, this.y,
-                    new Animation("Graphics/Fire/Fire_Up.png", 64, 64, 5, 5, 0), 0, -6));
+                entities.push(new Projectile(this.x + this.width/2 - 24, this.y, 48, 48,
+                    new Animation("Graphics/Fire/Fire_Up.png", 64, 64, 5, 5, 0), 0, -6, 6, true, false));
             } else if (this.facing == "down") {
-                objects.push(new Projectile(this.x + this.width/2 - 24, this.y + this.height/2,
-                    new Animation("Graphics/Fire/Fire_Down.png", 64, 64, 5, 5, 0), 0, 6));
+                entities.push(new Projectile(this.x + this.width/2 - 24, this.y + this.height/2, 48, 48,
+                    new Animation("Graphics/Fire/Fire_Down.png", 64, 64, 5, 5, 0), 0, 6, 6, true, false));
             }
             keysDown[32] = false;
         }
@@ -83,8 +83,15 @@ class Player extends MovingObject {
         this.y -= 32;
         this.height = 64;
     }
+    render() {
+        if (this.noDamage < 50) {
+            ctx.globalAlpha = 0.5;
+        }
+        super.render();
+        ctx.globalAlpha = 1;
+    }
     collision(xvel, yvel, object) {
-        if (object.type == "enemy" && this.noDamage > 50) {
+        if ((object.type == "enemy" || (object.type == "projectile" && object.parent.killsPlayer)) && this.noDamage > 50) {
             this.health -= 1;
             this.noDamage = 0;
             flashScreen = true;

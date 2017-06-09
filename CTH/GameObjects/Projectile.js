@@ -1,23 +1,26 @@
 class Projectile extends MovingObject {
-    constructor(x, y, sprite, xvel, yvel) {
-        super(x, y, 48, 48, sprite, 6, new Hitbox(x, y, 48, 48, false, false, "projectile"));
+    constructor(x, y, width, height, sprite, xvel, yvel, speed, killsEnemies, killsPlayer) {
+        super(x, y, width, height, sprite, speed, new Hitbox(x, y, width, height, false, false, "projectile"));
         this.xvel = xvel;
         this.yvel = yvel;
-        this.removeCount = 0;
+        this.killsEnemies = killsEnemies;
+        this.killsPlayer = killsPlayer;
     }
     update() {
-        this.removeCount++;
-        if (this.removeCount > 500) {
-            this.remove();
-        }
         super.update();
+    }
+    target(x, y) {
+        var angle = Math.atan2(x - this.x, y - this.y);
+        this.xvel = Math.sin(angle) * this.speed;
+        this.yvel = Math.cos(angle) * this.speed;
     }
     collision(xvel, yvel, object) {
         if (object.killsProj) {
             this.remove();
         }
-        if (object.type == "enemy") {
+        if (object.type == "enemy" && this.killsEnemies) {
             object.parent.kill();
+            this.remove();
         }
     }
 }

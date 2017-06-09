@@ -42,6 +42,16 @@ function getSectionFromKey(key) {
 var maps = [
     [
         [
+            " ", //key
+            "", //top
+            "", //left
+            "", //top to end
+            "" //left to end
+        ],
+        [[""]]
+    ],
+    [
+        [
             "w", //key
             "wbd", //top
             "wry", //left
@@ -92,6 +102,30 @@ var maps = [
                 "gggggggggg",
                 "gggggggggg",
                 "gggggggggg",
+                "gggggggggg",
+            ],
+            [
+                "gggggggggg",
+                "gggggggggg",
+                "gggggggggg",
+                "gggggggggg",
+                "gggggggggg",
+                "gggggggggg",
+                "gggggggggg",
+                "gggggggggg",
+                "gggggggggg",
+                "gggggggggg",
+            ],
+            [
+                "gggggggggg",
+                "gggggggggg",
+                "gggggggggg",
+                "gggggggggg",
+                "ggddddgggg",
+                "grwwwwbggg",
+                "ggywwwwlgg",
+                "gggywtuggg",
+                "gggguggggg",
                 "gggggggggg",
             ]
         ]

@@ -1,28 +1,64 @@
-function addTree(x, y) {
-    hitboxes.push(new Hitbox(x + 16, y + 32, 96, 96, true, true));
-    tiles.push(new SizedTile(x, y, 128, 64, new Sprite("Graphics/Terrain/Tree/Tree_Top.png"), true));
-    tiles.push(new SizedTile(x, y + 64, 128, 64, new Sprite("Graphics/Terrain/Tree/Tree_Bottom.png"), false));
+function addEnemy(enemy) {
+    if (getEnemies().length < 15) {
+        entities.push(enemy);
+    }
+}
+
+function getEnemies() {
+    enemies = [];
+    for (var i = 0; i != entities.length; i++) {
+        if (entities[i] instanceof Enemy) {
+            enemies.push(entities[i]);
+        }
+    }
+    return enemies;
 }
 
 function addZombie(x, y) {
-    objects.push(new Enemy(x, y,
+    addEnemy(new Enemy(x, y,
         new Animation("Graphics/Zombie/Zombie_Left.png", 32, 64, 3, 10, 0),
         new Animation("Graphics/Zombie/Zombie_Right.png", 32, 64, 3, 10, 0),
         new Animation("Graphics/Zombie/Zombie_Back.png", 32, 64, 3, 10, 0),
         new Animation("Graphics/Zombie/Zombie_Front.png", 32, 64, 3, 10, 0),
+        2, new Hitbox(x, y + 20, 32, 32, false, false, "enemy")
     ));
 }
 
-function addCave(x, y) {
-    objects.push(new Spawner(x, y, new Sprite("Graphics/Terrain/Cave.png")));
+function addFairy(x, y) {
+    if (Math.floor(Math.random()*2) == 0) {
+        addEnemy(new ProjectileEnemy(x, y,
+            new Animation("Graphics/Fairy/Fairy_Left.png", 56, 100, 9, 10, 0),
+            new Animation("Graphics/Fairy/Fairy_Right.png", 56, 100, 9, 10, 0),
+            new Animation("Graphics/Fairy/Fairy_Back.png", 56, 100, 9, 10, 0),
+            new Animation("Graphics/Fairy/Fairy_Front.png", 56, 100, 9, 10, 0),
+            new Sprite("Graphics/Fairy/Orb.png"),
+            1, new Hitbox(x, y + 32, 32, 32, false, false, "enemy")
+        ));
+    } else {
+        addEnemy(new ProjectileEnemy(x, y,
+            new Animation("Graphics/Fairy/Fairy1_Left.png", 56, 100, 9, 10, 0),
+            new Animation("Graphics/Fairy/Fairy1_Right.png", 56, 100, 9, 10, 0),
+            new Animation("Graphics/Fairy/Fairy1_Back.png", 56, 100, 9, 10, 0),
+            new Animation("Graphics/Fairy/Fairy1_Front.png", 56, 100, 9, 10, 0),
+            new Sprite("Graphics/Fairy/Red_Orb.png"),
+            1, new Hitbox(x, y + 32, 32, 32, false, false, "enemy")
+        ));
+    }
 }
 
-function addPlayer(x, y) {
-    player.x = x;
-    player.y = y;
+function generateMap(width, height) {
+    try {
+        map = generateTerrain(width, height);
+        return map;
+    } catch (err) {
+        console.log("Error!");
+        return null;
+    }
 }
 
 function generateTerrain(width, height) {
+    console.log("Generating Map...");
+    renderLoadingScreen();
     var w = "w";
     var row = "";
     for (var x = 0; x != width; x++) {
@@ -41,10 +77,51 @@ function generateTerrain(width, height) {
             }
         }
     }
+    console.log("Finishing Map...");
     map = addMapEnd(map);
-    readWholeMap(0, 0, map);
-    console.log(map);
-    console.log("Done!");
+    console.log("Cleaning Map...");
+    map = removeUnnecesaryWater(map);
+    console.log("Loading Map Sections...");
+    world = getWorld(map);
+    return world;
+}
+
+function getWorld(map) {
+    world = new World(map);
+    for (var y = 0; y != map.length; y++) {
+        world.sections.push([]);
+        for (var x = 0; x != map[y].length; x++) {
+            world.sections[y].push(new Section(x, y, getSectionFromKey(map[y][x])[1][Math.floor(Math.random()*getSectionFromKey(map[y][x])[1].length)]));
+        }
+    }
+    return world;
+}
+
+function removeUnnecesaryWater(map) {
+    for (var y = 0; y != map.length; y++) {
+        for (var x = 0; x != map[y].length; x++) {
+            if (isWaterUnnecesary(map, x, y)) {
+                map[y] = map[y].substring(0, x) + " " + map[y].substring(x + 1, map[y].length);
+            }
+        }
+    }
+    return map;
+}
+
+function isWaterUnnecesary(map, x, y) {
+    for (var y1 = -1; y1 != 2; y1++) {
+        for (var x1 = -1; x1 != 2; x1++) {
+            if (map[y + y1] != null) {
+                if (map[y + y1][x + x1] != null &&
+                    map[y + y1][x + x1] != "w" &&
+                    map[y + y1][x + x1] != " "
+                ) {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
 }
 
 function addMapEnd(map) {
@@ -132,19 +209,19 @@ function doesSectionFit(map, section, x, y) {
     return false;
 }
 
-function readWholeMap(x1, y1, map) {
+function readMap(x1, y1, map) {
     for (var y = 0; y != map.length; y++) {
 		for (var x = 0; x != map[y].split("").length; x++) {
 			var key = map[y].split("")[x];
 
             section = getSectionFromKey(key)[1][Math.floor(Math.random()*getSectionFromKey(key)[1].length)]
-            readMap(section, x*section[0].length + x1, y*section.length + y1);
+            readMapSection(section, x*section[0].length + x1, y*section.length + y1);
 
         }
     }
 }
 
-function readMap(map, x1, y1) {
+function readMapSection(map, x1, y1) {
 	for (var y2 = 0; y2 != map.length; y2++) {
 		for (var x2 = 0; x2 != map[y2].split("").length; x2++) {
 

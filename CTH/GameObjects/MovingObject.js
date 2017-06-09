@@ -5,10 +5,11 @@ class MovingObject extends RenderedObject {
         this.yvel = 0;
         this.speed = speed;
         this.hitbox = hitbox;
-        this.hitbox.parent = this;
-        hitboxes.push(this.hitbox);
-        this.hitboxX = this.x - this.hitbox.x;
-        this.hitboxY = this.y - this.hitbox.y;
+        if (this.hitbox != null) {
+            this.hitbox.parent = this;
+            this.hitboxX = this.x - this.hitbox.x;
+            this.hitboxY = this.y - this.hitbox.y;
+        }
     }
     update() {
         this.x += this.xvel;
@@ -19,6 +20,7 @@ class MovingObject extends RenderedObject {
         this.hitbox.y = this.y + this.hitboxY;
     }
     collide(xvel, yvel) {
+        hitboxes = getHitboxes();
         for (var i = 0; i != hitboxes.length; i++) {
             if (collision(this, hitboxes[i]) && hitboxes[i] != this.hitbox) {
                 this.collision(xvel, yvel, hitboxes[i]);

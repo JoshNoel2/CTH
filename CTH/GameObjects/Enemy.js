@@ -1,18 +1,16 @@
 class Enemy extends MovingObject {
-    constructor(x, y, movingLeftSprite, movingRightSprite, movingUpSprite, movingDownSprite) {
-        super(x, y, 32, 32, movingDownSprite, 2,
-            new Hitbox(x, y + 20, 32, 32, true, false, "enemy"));
+    constructor(x, y, movingLeftSprite, movingRightSprite, movingUpSprite, movingDownSprite, speed, hitbox) {
+        super(x, y, 32, 32, movingDownSprite, speed, hitbox);
         this.movingLeftSprite = movingLeftSprite;
         this.movingRightSprite = movingRightSprite;
         this.movingUpSprite = movingUpSprite;
         this.movingDownSprite = movingDownSprite;
         this.facing = "down";
         this.accuracy = 30;
-        this.killsProj = true;
         this.killedByPlayer = false;
     }
     update() {
-        if (Math.floor(Math.random()*this.accuracy) == 1) {
+        if (this.accuracy == 0 || Math.floor(Math.random()*this.accuracy) == 1) {
             if (player.x < this.x) {
                 this.xvel = -this.speed;
                 this.facing = "left";
@@ -25,7 +23,7 @@ class Enemy extends MovingObject {
                 this.xvel = 0;
             }
         }
-        if (Math.floor(Math.random()*this.accuracy) == 1) {
+        if (this.accuracy == 0 || Math.floor(Math.random()*this.accuracy) == 1) {
             if (player.y < this.y) {
                 this.yvel = -this.speed;
                 this.facing = "up";

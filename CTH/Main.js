@@ -7,6 +7,9 @@ canvas.height = 600;
 var ctx = canvas.getContext("2d");
 
 var ended = false;
+var loading = false;
+
+var mapSize = [250, 250];
 
 var keysDown = {};
 
@@ -30,17 +33,26 @@ run();
 
 function run() {
 
-	if (!ended) {
-		update();
-	}
-	render();
-	removeObjects();
-	if (ended) {
-		if (keysDown[32]) {
-			keysDown[32] = false;
-			ended = false;
-			start();
+	if (!loading) {
+		if (!ended) {
+			update();
 		}
+		render();
+		removeObjects();
+		if (ended) {
+			if (keysDown[32]) {
+				keysDown[32] = false;
+				ended = false;
+				start();
+			}
+		}
+	} else {
+		renderLoadingScreen();
+	}
+	
+	if (keysDown[9]) {
+		logData();
+		keysDown[9] = false;
 	}
 
 	requestAnimationFrame(run);
