@@ -1,6 +1,7 @@
 class World {
-    constructor(map) {
+    constructor(map, biomesList) {
         this.map = map;
+        this.biomes = biomesList;
         this.sections = [];
     }
     getSection(x, y) {

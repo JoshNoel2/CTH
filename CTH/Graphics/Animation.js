@@ -10,7 +10,7 @@ class Animation extends Sprite {
         this.y = y;
     }
     render(x, y, width, height) {
-        if (!ended) {
+        if (!ended && !paused) {
             this.ticks += 1;
             if (this.ticks >= this.ticksPerFrame) {
                 this.ticks = 0;
@@ -21,6 +21,6 @@ class Animation extends Sprite {
                 }
             }
         }
-    	renderImage(this.image, this.width*this.currentFrame, this.y, this.width, this.height, x, y, width, height);
+        renderImage(this.image, this.width*this.currentFrame, this.y, this.width, this.height, x, y, width, height);
     }
 }

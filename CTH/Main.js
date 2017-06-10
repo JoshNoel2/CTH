@@ -8,6 +8,7 @@ var ctx = canvas.getContext("2d");
 
 var ended = false;
 var loading = false;
+var paused = false;
 
 var mapSize = [250, 250];
 
@@ -34,7 +35,7 @@ run();
 function run() {
 
 	if (!loading) {
-		if (!ended) {
+		if (!ended && !paused) {
 			update();
 		}
 		render();
@@ -45,7 +46,16 @@ function run() {
 				ended = false;
 				start();
 			}
-		}
+		} else {
+				if (keysDown[16]) {
+					keysDown[16] = false;
+					if (paused) {
+						paused = false;
+					} else {
+						paused = true;
+					}
+				}
+			}
 	} else {
 		renderLoadingScreen();
 	}

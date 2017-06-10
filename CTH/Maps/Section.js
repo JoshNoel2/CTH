@@ -1,12 +1,46 @@
 class Section {
-    constructor(x, y, map) {
+    constructor(x, y, map, biome) {
         this.x = x;
         this.y = y;
         this.map = map;
+        this.biome = biome;
         this.isLoaded = false;
         this.objects = [];
         this.hitboxes = [];
         this.tiles = [];
+    }
+    addBiomeObjects(x, y) {
+        if (this.biome == "X") {
+            if (Math.floor(Math.random()*5) == 0) {
+                this.hitboxes.push(new Hitbox(x*128 + 32, y*128 + 48, 64, 80, false, true));
+                this.tiles.push(new SizedTile(x*128, y*128, 128, 64, new Sprite("Graphics/Terrain/Tree/Tree_Top.png"), true));
+                this.tiles.push(new SizedTile(x*128, y*128 + 64, 128, 64, new Sprite("Graphics/Terrain/Tree/Tree_Bottom.png"), false));
+            } else if (x % 4 === 0 && y % 4 === 0) {
+                this.objects.push(new Spawner(x*128, y*128, this.biome));
+            }
+        } else if (this.biome == 0) {
+            if (Math.floor(Math.random()*5) == 0) {
+                this.hitboxes.push(new Hitbox(x*128 + 32, y*128 + 48, 64, 80, false, true));
+                this.tiles.push(new SizedTile(x*128, y*128, 128, 64, new Sprite("Graphics/Terrain/Tree/Tree_Top.png"), true));
+                this.tiles.push(new SizedTile(x*128, y*128 + 64, 128, 64, new Sprite("Graphics/Terrain/Tree/Tree_Bottom.png"), false));
+            } else if (Math.floor(Math.random()*5) == 0) {
+                this.hitboxes.push(new Hitbox(x*128 + 48, y*128 + 16, 32, 96, false, true));
+                this.tiles.push(new Tile(x*128, y*128 - 100, new Sprite("Graphics/Terrain/Tree/Tree2_Top.png"), true));
+                this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Tree/Tree2_Bottom.png"), false));
+            } else if (x % 4 === 0 && y % 4 === 0) {
+                this.objects.push(new Spawner(x*128, y*128, this.biome));
+            }
+        } else if (this.biome == 1) {
+            if (Math.floor(Math.random()*3) == 0) {
+                this.hitboxes.push(new Hitbox(x*128 + 48, y*128 + 16, 32, 96, false, true));
+                this.tiles.push(new Tile(x*128, y*128 - 100, new Sprite("Graphics/Terrain/Tree/Tree1_Top.png"), true));
+                this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Tree/Tree1_Bottom.png"), false));
+            } else if (Math.floor(Math.random()*3) == 0) {
+                this.tiles.push(new Tile(x*128 + Math.floor(Math.random()*100), y*128 + Math.floor(Math.random()*100), new Sprite("Graphics/Terrain/Mushroom.png")));
+            } else if (x % 4 === 0 && y % 4 === 0){
+                this.objects.push(new Spawner(x*128, y*128, this.biome));
+            }
+        }
     }
     unload() {
         if (this.isLoaded) {
@@ -36,24 +70,8 @@ class Section {
                         player.y = y*128;
                         this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Grass.png")));
         			} else if (key == "g") {
-        				this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Grass.png")));
-                        if (Math.floor(Math.random()*5) == 0) {
-                            this.hitboxes.push(new Hitbox(x*128 + 16, y*128 + 32, 96, 96, false, true));
-                            this.tiles.push(new SizedTile(x*128, y*128, 128, 64, new Sprite("Graphics/Terrain/Tree/Tree_Top.png"), true));
-                            this.tiles.push(new SizedTile(x*128, y*128 + 64, 128, 64, new Sprite("Graphics/Terrain/Tree/Tree_Bottom.png"), false));
-                        } else if (Math.floor(Math.random()*3) == 0) {
-                            this.hitboxes.push(new Hitbox(x*128 + 48, y*128 + 16, 32, 96, false, true));
-                            this.tiles.push(new Tile(x*128, y*128 - 100, new Sprite("Graphics/Terrain/Tree/Tree1_Top.png"), true));
-                            this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Tree/Tree1_Bottom.png"), false));
-                        // }  else if (Math.floor(Math.random()*5) == 0) {
-                            // this.hitboxes.push(new Hitbox(x*128 + 48, y*128 + 16, 32, 96, true, true));
-                            // this.tiles.push(new Tile(x*128, y*128 - 100, new Sprite("Graphics/Terrain/Tree/Tree2_Top.png"), true));
-                            // this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Tree/Tree2_Bottom.png"), false));
-                        } else if (Math.floor(Math.random()*20) == 0) {
-                            this.objects.push(new Spawner(x*128, y*128));
-                        } else if (Math.floor(Math.random()*5) == 0) {
-                            this.tiles.push(new Tile(x*128 + Math.floor(Math.random()*100), y*128 + Math.floor(Math.random()*100), new Sprite("Graphics/Terrain/Mushroom.png")));
-                        }
+                        this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Grass.png")));
+                        this.addBiomeObjects(x, y);
         			} else if (key == "w") {
         				this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Water/Water.png")));
         			} else if (key == "l") {

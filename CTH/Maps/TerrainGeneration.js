@@ -1,5 +1,5 @@
 function addEnemy(enemy) {
-    if (getEnemies().length < 15) {
+    if (getEnemies().length < getBiomeFromKey(getCurrentSection().biome)[1]) {
         entities.push(enemy);
     }
 }
@@ -12,38 +12,6 @@ function getEnemies() {
         }
     }
     return enemies;
-}
-
-function addZombie(x, y) {
-    addEnemy(new Enemy(x, y,
-        new Animation("Graphics/Zombie/Zombie_Left.png", 32, 64, 3, 10, 0),
-        new Animation("Graphics/Zombie/Zombie_Right.png", 32, 64, 3, 10, 0),
-        new Animation("Graphics/Zombie/Zombie_Back.png", 32, 64, 3, 10, 0),
-        new Animation("Graphics/Zombie/Zombie_Front.png", 32, 64, 3, 10, 0),
-        2, new Hitbox(x, y + 20, 32, 32, false, false, "enemy")
-    ));
-}
-
-function addFairy(x, y) {
-    if (Math.floor(Math.random()*2) == 0) {
-        addEnemy(new ProjectileEnemy(x, y,
-            new Animation("Graphics/Fairy/Fairy_Left.png", 56, 100, 9, 10, 0),
-            new Animation("Graphics/Fairy/Fairy_Right.png", 56, 100, 9, 10, 0),
-            new Animation("Graphics/Fairy/Fairy_Back.png", 56, 100, 9, 10, 0),
-            new Animation("Graphics/Fairy/Fairy_Front.png", 56, 100, 9, 10, 0),
-            new Sprite("Graphics/Fairy/Orb.png"),
-            1, new Hitbox(x, y + 32, 32, 32, false, false, "enemy")
-        ));
-    } else {
-        addEnemy(new ProjectileEnemy(x, y,
-            new Animation("Graphics/Fairy/Fairy1_Left.png", 56, 100, 9, 10, 0),
-            new Animation("Graphics/Fairy/Fairy1_Right.png", 56, 100, 9, 10, 0),
-            new Animation("Graphics/Fairy/Fairy1_Back.png", 56, 100, 9, 10, 0),
-            new Animation("Graphics/Fairy/Fairy1_Front.png", 56, 100, 9, 10, 0),
-            new Sprite("Graphics/Fairy/Red_Orb.png"),
-            1, new Hitbox(x, y + 32, 32, 32, false, false, "enemy")
-        ));
-    }
 }
 
 function generateMap(width, height) {
@@ -81,17 +49,60 @@ function generateTerrain(width, height) {
     map = addMapEnd(map);
     console.log("Cleaning Map...");
     map = removeUnnecesaryWater(map);
+    console.log("Generating Biomes...");
+    biomesList = generateBiomes(map);
     console.log("Loading Map Sections...");
-    world = getWorld(map);
+    world = getWorld(map, biomesList);
     return world;
 }
 
-function getWorld(map) {
-    world = new World(map);
+function generateBiomes(map) {
+    biomesList = map.slice();
+    for (var y = 0; y != map.length; y++) {
+        for (var x = 0; x != map[y].length; x++) {
+            if (map[y][x] != " ") {
+                possibleBiomes = [];
+                if (y != 0) {
+                    for (var i = 0; i != 10; i++) {
+                        if (biomesList[y - 1][x] != " ") {
+                            possibleBiomes.push(biomesList[y - 1][x]);
+                        }
+                    }
+                }
+                if (x != 0) {
+                    for (var i = 0; i != 10; i++) {
+                        if (biomesList[y][x - 1] != " ") {
+                            possibleBiomes.push(biomesList[y][x - 1]);
+                        }
+                    }
+                }
+                for (var i = 0; i != biomes.length; i++) {
+                    if (biomes[i][2] <= y && biomes[i] != getMostUsedBiome(y)) {
+                        possibleBiomes.push(biomes[i][0]);
+                    }
+                }
+                for (var i = 0; i != 5; i++) {
+                    possibleBiomes.push(getLeastUsedBiome(y)[0]);
+                }
+                biome = possibleBiomes[Math.floor(Math.random()*possibleBiomes.length)];
+                biomes[getBiomeIndexFromKey(biome)][4]++;
+                biomesList[y] = biomesList[y].substring(0, x) +
+                biome +
+                biomesList[y].substring(x + 1, biomesList[y].length);
+            }
+        }
+    }
+    return biomesList;
+}
+
+function getWorld(map, biomesList) {
+    world = new World(map, biomesList);
     for (var y = 0; y != map.length; y++) {
         world.sections.push([]);
         for (var x = 0; x != map[y].length; x++) {
-            world.sections[y].push(new Section(x, y, getSectionFromKey(map[y][x])[1][Math.floor(Math.random()*getSectionFromKey(map[y][x])[1].length)]));
+            world.sections[y].push(new Section(x, y,
+                getSectionFromKey(map[y][x])[1][Math.floor(Math.random()*getSectionFromKey(map[y][x])[1].length)],
+                 biomesList[y][x]));
         }
     }
     return world;

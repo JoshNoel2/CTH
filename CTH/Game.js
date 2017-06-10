@@ -46,6 +46,7 @@ function start() {
 
 function load() {
 	renderHitboxes = false;
+	paused = false;
 	flashScreen = false;
     camerax = cameray = 0;
 	slowUpdate = 0;
@@ -257,6 +258,11 @@ function drawText() {
 	if (ended) {
 		ctx.font = "50px Courier New";
 		ctx.fillText("Press Space to Play Again", getCentreWidth("Press Space to Play Again"), 175);
+	} else if (paused) {
+		ctx.font = "50px Courier New";
+		ctx.fillText("Paused", getCentreWidth("Paused"), 175);
+		ctx.font = "30px Courier New";
+		ctx.fillText("Press Shift to Play", getCentreWidth("Press Shift to Play"), 250);
 	}
 }
 
