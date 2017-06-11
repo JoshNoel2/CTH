@@ -13,4 +13,10 @@ class Zombie extends Enemy {
             this.speed = 2;
         }
     }
+    kill() {
+        if (Math.floor(Math.random()*20) == 0) {
+            entities.push(new LootBag(this.x, this.y, [new ItemStack(new Mushroom(), 3), new ItemStack(new Staff(), 1)]));
+        }
+        super.kill();
+    }
 }

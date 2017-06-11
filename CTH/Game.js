@@ -10,6 +10,9 @@ var renderHitboxes;
 
 var flashScreen;
 
+var inventory;
+var mouseItem;
+
 var camerax, cameray;
 
 function collision(rect1, rect2) {
@@ -53,6 +56,8 @@ function load() {
 	entities = [];
 	toRemove = [];
 	loadedSections = [];
+	inventory = new PlayerInventory(0, canvas.height - 128);
+	mouseItem = new Slot(0, 0);
 	player = new Player(0, 0,
 						new Animation("Graphics/Player/playerStationaryLeftSprite.png", 32, 64, 5, 5, 0),
 						new Animation("Graphics/Player/playerStationaryRightSprite.png", 32, 64, 5, 5, 0),
@@ -193,6 +198,7 @@ function update() {
 	if (player.health <= 0) {
 		end();
 	}
+
 }
 
 function render() {
@@ -212,13 +218,18 @@ function render() {
 		}
     }
     for (var i = 0; i != entities.length; i++) {
-		if (isOnScreen(entities[i])) {
+		if (isOnScreen(entities[i]) && !entities[i].priority) {
         	entities[i].render();
 		}
     }
 	if (!ended) {
 		player.render();
 	}
+    for (var i = 0; i != entities.length; i++) {
+		if (isOnScreen(entities[i]) && entities[i].priority) {
+        	entities[i].render();
+		}
+    }
 	tiles = getTiles();
     for (var i = 0; i != tiles.length; i++) {
 		if (isOnScreen(tiles[i])) {
@@ -240,29 +251,78 @@ function render() {
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 		ctx.globalAlpha = 1;
 	}
-	for (var i = 0; i != player.health; i++) {
-		new Sprite("Graphics/Heart.png").render(10 + i*50, 10, 50, 50);
-	}
+	player.renderHealth();
+	renderInventories();
 	drawText();
+}
+
+function updateInventories() {
+	inventory.updateInventory();
+	inventory.updateHotbar();
+	for (var i = 0; i != entities.length; i++) {
+		if (entities[i] instanceof LootBag) {
+			entities[i].inventory.updateInventory();
+		}
+	}
+	mouseItem.x = pos["x"];
+	mouseItem.y = pos["y"];
+	if (keysDown[9]) {
+		keysDown[9] = false;
+		if (inventory.isOpen) {
+			inventory.close();
+			for (var i = 0; i != entities.length; i++) {
+				if (entities[i] instanceof LootBag) {
+					if (collision(entities[i], player)) {
+						entities[i].inventory.close();
+					}
+				}
+			}
+		} else {
+			inventory.open();
+			for (var i = 0; i != entities.length; i++) {
+				if (entities[i] instanceof LootBag) {
+					if (collision(entities[i], player)) {
+						entities[i].inventory.open();
+						break;
+					}
+				}
+			}
+		}
+	}
+}
+
+function renderInventories() {
+	inventory.renderHotbar();
+	if (inventory.isOpen) {
+		inventory.renderContents();
+		for (var i = 0; i != entities.length; i++) {
+			if (entities[i] instanceof LootBag) {
+				if (entities[i].inventory.isOpen) {
+					entities[i].inventory.renderContents();					
+				}
+			}
+		}
+        mouseItem.renderItem();
+	}
 }
 
 function drawText() {
 	ctx.fillStyle = "#ffffff";
 	ctx.font = "30px Courier New";
-	ctx.fillText("Kills: " + player.kills, 10, canvas.height - 60);
+	// ctx.fillText("Kills: " + player.kills, 10, canvas.height - 60);
 	if (player.kills > localStorage.getItem("cth_highscore")) {
-		ctx.fillText("Highscore: " + player.kills, 10, canvas.height - 25);
+		// ctx.fillText("Highscore: " + player.kills, 10, canvas.height - 25);
 	} else {
-		ctx.fillText("Highscore: " + localStorage.getItem("cth_highscore"), 10, canvas.height - 25);
+		// ctx.fillText("Highscore: " + localStorage.getItem("cth_highscore"), 10, canvas.height - 25);
 	}
 	if (ended) {
 		ctx.font = "50px Courier New";
 		ctx.fillText("Press Space to Play Again", getCentreWidth("Press Space to Play Again"), 175);
 	} else if (paused) {
 		ctx.font = "50px Courier New";
-		ctx.fillText("Paused", getCentreWidth("Paused"), 175);
+		// ctx.fillText("Paused", getCentreWidth("Paused"), 175);
 		ctx.font = "30px Courier New";
-		ctx.fillText("Press Shift to Play", getCentreWidth("Press Shift to Play"), 250);
+		// ctx.fillText("Press Backspace to Play", getCentreWidth("Press Backspace to Play"), 250);
 	}
 }
 

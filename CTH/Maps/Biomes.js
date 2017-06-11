@@ -71,14 +71,14 @@ var biomes = [
     [
         "0", //key
         "15", //max enemies in biome
-        "3", //y level biome can be generated from
+        "2", //y level biome can be generated from
         "2", //enemy difficulty in biome
         0, //total instances of biome in world
     ],
     [
         "1", //key
         "8", //max enemies in biome
-        "6", //y level biome can be generated from
+        "2", //y level biome can be generated from
         "1", //enemy difficulty in biome
         0, //total instances of biome in world
     ]

@@ -13,6 +13,7 @@ var paused = false;
 var mapSize = [250, 250];
 
 var keysDown = {};
+var pos = {};
 
 addEventListener("keydown", function (e) {
 	keysDown[e.keyCode] = true;
@@ -23,6 +24,26 @@ addEventListener("keydown", function (e) {
 
 addEventListener("keyup", function (e) {
 	keysDown[e.keyCode] = false;
+}, false);
+
+addEventListener("mousemove", function(e) {
+	pos["x"] = e.pageX;
+	pos["y"] = e.pageY + 60;
+}, false);
+
+addEventListener("click", function(e) {
+	if (!ended && inventory != null) {
+		if (inventory.isOpen) {
+			inventory.clickEvent();
+		}
+		for (var i = 0; i != entities.length; i++) {
+			if (entities[i] instanceof LootBag) {
+				if (entities[i].inventory.isOpen) {
+					entities[i].inventory.clickEvent();
+				}
+			}
+		}
+	}
 }, false);
 
 var w = window;
@@ -38,6 +59,9 @@ function run() {
 		if (!ended && !paused) {
 			update();
 		}
+		if (!ended) {
+			updateInventories();
+		}
 		render();
 		removeObjects();
 		if (ended) {
@@ -46,23 +70,9 @@ function run() {
 				ended = false;
 				start();
 			}
-		} else {
-				if (keysDown[16]) {
-					keysDown[16] = false;
-					if (paused) {
-						paused = false;
-					} else {
-						paused = true;
-					}
-				}
-			}
+		}
 	} else {
 		renderLoadingScreen();
-	}
-	
-	if (keysDown[9]) {
-		logData();
-		keysDown[9] = false;
 	}
 
 	requestAnimationFrame(run);

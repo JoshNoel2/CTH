@@ -5,6 +5,9 @@ class MovingObject extends RenderedObject {
         this.yvel = 0;
         this.speed = speed;
         this.hitbox = hitbox;
+        this.updateHitbox();
+    }
+    updateHitbox() {
         if (this.hitbox != null) {
             this.hitbox.parent = this;
             this.hitboxX = this.x - this.hitbox.x;
@@ -13,10 +16,12 @@ class MovingObject extends RenderedObject {
     }
     update() {
         this.x += this.xvel;
-        this.collide(this.xvel, 0);
-        this.y += this.yvel;
-        this.collide(0, this.yvel);
         this.hitbox.x = this.x + this.hitboxX;
+        this.collide(this.xvel, 0);
+        this.hitbox.x = this.x + this.hitboxX;
+        this.y += this.yvel;
+        this.hitbox.y = this.y + this.hitboxY;
+        this.collide(0, this.yvel);
         this.hitbox.y = this.y + this.hitboxY;
     }
     collide(xvel, yvel) {

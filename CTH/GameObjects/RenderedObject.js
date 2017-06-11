@@ -1,6 +1,7 @@
 class RenderedObject extends GameObject {
     constructor(x, y, width, height, sprite) {
         super(x, y, width, height);
+        this.priority = false;
         this.sprite = sprite;
     }
     render() {

@@ -12,30 +12,25 @@ class Player extends MovingObject {
         this.movingUpSprite = movingUpSprite;
         this.movingDownSprite = movingDownSprite;
         this.facing = "down";
-        this.shotDelay = 0;
-        this.health = 5;
+        this.itemCooldown = 0;
+        this.health = 10;
+        this.maxHealth = 10;
         this.noDamage = 51;
         this.kills = 0;
     }
     update() {
-        this.shotDelay++;
+        this.itemCooldown++;
         this.noDamage++;
-        if (keysDown[32] && this.shotDelay > 20) {
-            this.shotDelay = 0;
-            if (this.facing == "left") {
-                entities.push(new Projectile(this.x, this.y + this.height/2 - 24, 48, 48,
-                    new Animation("Graphics/Fire/Fire_Left.png", 64, 64, 5, 5, 0), -6, 0, 6, true, false));
-            } else if (this.facing == "right") {
-                entities.push(new Projectile(this.x + this.width/2, this.y + this.height/2 - 24, 48, 48,
-                    new Animation("Graphics/Fire/Fire_Right.png", 64, 64, 5, 5, 0), 6, 0, 6, true, false));
-            } else if (this.facing == "up") {
-                entities.push(new Projectile(this.x + this.width/2 - 24, this.y, 48, 48,
-                    new Animation("Graphics/Fire/Fire_Up.png", 64, 64, 5, 5, 0), 0, -6, 6, true, false));
-            } else if (this.facing == "down") {
-                entities.push(new Projectile(this.x + this.width/2 - 24, this.y + this.height/2, 48, 48,
-                    new Animation("Graphics/Fire/Fire_Down.png", 64, 64, 5, 5, 0), 0, 6, 6, true, false));
+        if (keysDown[32] && inventory.getCurrentItem() != null) {
+            if (this.itemCooldown >= inventory.getCurrentItem().item.cooldown) {
+                this.itemCooldown = 0;
+                if (inventory.getCurrentItem().item.use()) {
+                    if (inventory.getCurrentItem().item.consumable) {
+                        inventory.setAmount(9 + inventory.hotbarSlot, inventory.getCurrentItem().amount - 1);
+                    }
+                }
+                keysDown[32] = false;
             }
-            keysDown[32] = false;
         }
         this.sprite = this.stationaryDownSprite;
         if (keysDown[65] || keysDown[37]) {
@@ -89,6 +84,22 @@ class Player extends MovingObject {
         }
         super.render();
         ctx.globalAlpha = 1;
+    }
+    renderHealth() {
+    	for (var i = 0; i != 5; i++) {
+            if (player.health >= i + 1) {
+                new Sprite("Graphics/Health/Heart.png").render(10 + i*50, 10, 50, 50);
+            } else {
+                new Sprite("Graphics/Health/EmptyHeart.png").render(10 + i*50, 10, 50, 50);
+            }
+    	}
+        for (var i = 0; i != 5; i++) {
+            if (player.health >= i + 6) {
+        	   new Sprite("Graphics/Health/Heart.png").render(10 + i*50, 50, 50, 50);
+           } else {
+                new Sprite("Graphics/Health/EmptyHeart.png").render(10 + i*50, 50, 50, 50);
+           }
+    	}
     }
     collision(xvel, yvel, object) {
         if ((object.type == "enemy" || (object.type == "projectile" && object.parent.killsPlayer)) && this.noDamage > 50) {
