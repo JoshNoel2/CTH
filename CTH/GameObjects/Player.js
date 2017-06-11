@@ -13,8 +13,8 @@ class Player extends MovingObject {
         this.movingDownSprite = movingDownSprite;
         this.facing = "down";
         this.itemCooldown = 0;
-        this.health = 10;
-        this.maxHealth = 10;
+        this.health = 100;
+        this.maxHealth = 100;
         this.noDamage = 51;
         this.kills = 0;
     }
@@ -86,24 +86,28 @@ class Player extends MovingObject {
         ctx.globalAlpha = 1;
     }
     renderHealth() {
-    	for (var i = 0; i != 5; i++) {
-            if (player.health >= i + 1) {
+    	for (var i = 0; i != Math.floor(player.maxHealth/10)/2; i++) {
+            if (Math.floor(player.health/10) >= i + 1) {
                 new Sprite("Graphics/Health/Heart.png").render(10 + i*50, 10, 50, 50);
             } else {
                 new Sprite("Graphics/Health/EmptyHeart.png").render(10 + i*50, 10, 50, 50);
             }
     	}
-        for (var i = 0; i != 5; i++) {
-            if (player.health >= i + 6) {
-        	   new Sprite("Graphics/Health/Heart.png").render(10 + i*50, 50, 50, 50);
-           } else {
+        for (var i = 0; i != Math.floor(player.maxHealth/10)/2; i++) {
+            if (Math.floor(player.health/10) >= i + 6) {
+                new Sprite("Graphics/Health/Heart.png").render(10 + i*50, 50, 50, 50);
+            } else {
                 new Sprite("Graphics/Health/EmptyHeart.png").render(10 + i*50, 50, 50, 50);
-           }
+            }
     	}
     }
     collision(xvel, yvel, object) {
         if ((object.type == "enemy" || (object.type == "projectile" && object.parent.killsPlayer)) && this.noDamage > 50) {
-            this.health -= 1;
+            if (object.type == "projectile") {
+                this.health -= object.parent.damage;
+            } else {
+                this.health -= object.parent.damageToPlayer;
+            }
             this.noDamage = 0;
             flashScreen = true;
         }

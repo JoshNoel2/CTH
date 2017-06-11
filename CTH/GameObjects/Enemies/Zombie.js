@@ -5,12 +5,14 @@ class Zombie extends Enemy {
             new Animation("Graphics/Zombie/Zombie_Right.png", 32, 64, 3, 10, 0),
             new Animation("Graphics/Zombie/Zombie_Back.png", 32, 64, 3, 10, 0),
             new Animation("Graphics/Zombie/Zombie_Front.png", 32, 64, 3, 10, 0),
-            1, new Hitbox(x, y + 20, 32, 32, false, false, "enemy")
+            1, new Hitbox(x, y + 20, 32, 32, false, false, "enemy"), 10, 10, 10
         );
         if (level == 1)  {
             this.speed = 1;
         } else if (level == 2) {
             this.speed = 2;
+            this.health = 2;
+            this.maxHealth = 2;
         }
     }
     kill() {

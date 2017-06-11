@@ -1,6 +1,6 @@
 class MeleeWeapon extends Item {
     constructor(name, sprite, maxStack, cooldown, consumable, lifetime, length, width,
-                leftSprite, rightSprite, upSprite, downSprite, startExtension, fullExtension, killsEnemies) {
+                leftSprite, rightSprite, upSprite, downSprite, startExtension, fullExtension, singleShot, damage) {
         super(name, sprite, maxStack, cooldown, consumable);
         this.lifetime = lifetime;
         this.length = length;
@@ -11,7 +11,8 @@ class MeleeWeapon extends Item {
         this.downSprite = downSprite;
         this.startExtension = startExtension;
         this.fullExtension = fullExtension;
-        this.killsEnemies = killsEnemies;
+        this.singleShot = singleShot;
+        this.damage = damage;
     }
     use() {
         entities.push(new SwordObject(
@@ -23,7 +24,8 @@ class MeleeWeapon extends Item {
                                     this.downSprite,
                                     this.startExtension,
                                     this.fullExtension,
-                                    this.killsEnemies,
+                                    this.singleShot,
+                                    this.damage,
                                 ));
         return true;
     }

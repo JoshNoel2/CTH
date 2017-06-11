@@ -1,5 +1,6 @@
 class SwordObject extends MovingObject {
-    constructor(length, width1, lifetime, leftSprite, rightSprite, upSprite, downSprite, startExtension, fullExtension, killsEnemies) {
+    constructor(length, width1, lifetime, leftSprite, rightSprite, upSprite, downSprite, startExtension, fullExtension,
+         singleShot, damage) {
         super(player.x, player.y, length, width1, leftSprite, 0, new Hitbox(0, 0, length, width1, false, false, "sword"));
         this.lifetime = lifetime;
         this.lifeCount = 0;
@@ -12,7 +13,9 @@ class SwordObject extends MovingObject {
         this.startExtension = startExtension;
         this.extension = this.startExtension;
         this.fullExtension = fullExtension;
-        this.killsEnemies = killsEnemies;
+        this.facing = player.facing;
+        this.singleShot = singleShot;
+        this.damage = damage;
     }
     update() {
         if (this.lifeCount < this.lifetime/2) {
@@ -20,28 +23,28 @@ class SwordObject extends MovingObject {
         } else {
             this.extension -= (this.fullExtension - this.startExtension)/(this.lifetime/2);
         }
-        if (player.facing == "left") {
+        if (this.facing == "left") {
             this.width = this.length;
             this.height = this.width1;
             this.sprite = this.leftSprite;
             this.x = player.x - this.width + this.width/4 - this.extension;
             this.y = player.y + player.height/2 - this.width/2 + this.width/3;
             this.priority = false;
-        } else if (player.facing == "right") {
+        } else if (this.facing == "right") {
             this.width = this.length;
             this.height = this.width1;
             this.sprite = this.rightSprite;
             this.x = player.x + player.width - this.width/4 + this.extension;
             this.y = player.y + player.height/2 - this.width/2 + this.width/3;
             this.priority = false;
-        } else if (player.facing == "up") {
+        } else if (this.facing == "up") {
             this.width = this.width1;
             this.height = this.length;
             this.sprite = this.upSprite;
             this.x = player.x + player.width/2 - this.width/2;
             this.y = player.y - this.height + this.height/2 - this.extension;
             this.priority = false;
-        } else if (player.facing == "down") {
+        } else if (this.facing == "down") {
             this.width = this.width1;
             this.height = this.length;
             this.sprite = this.downSprite;
@@ -49,10 +52,10 @@ class SwordObject extends MovingObject {
             this.y = player.y + player.height - this.height/2 + this.extension;
             this.priority = true;
         }
-        this.hitbox.x = this.y;
-        this.hitbox.y = this.y;
-        this.hitbox.width = this.width;
-        this.hitbox.height = this.height;
+        // this.hitbox.x = this.y;
+        // this.hitbox.y = this.y;
+        // this.hitbox.width = this.width;
+        // this.hitbox.height = this.height;
         this.updateHitbox();
         this.lifeCount++;
         if (this.lifeCount >= this.lifetime || this.extension < this.startExtension) {
@@ -66,9 +69,13 @@ class SwordObject extends MovingObject {
         }
     }
     collision(xvel, yvel, object) {
-        if (object.type == "enemy" && this.killsEnemies) {
-            object.parent.kill();
-            this.lifeCount = this.lifetime/2;
+        if (object.type == "enemy") {
+            if (object.parent.noDamage > object.parent.damageCooldown) {
+                object.parent.damage(this.damage);
+                if (this.singleShot) {
+                    this.lifeCount = this.lifetime/2;
+                }
+            }
         }
     }
 }

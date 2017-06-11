@@ -18,8 +18,9 @@ class ItemStack {
                 description.push("Speed: " + this.item.projSpeed);
             } else {
                 description.push("Melee Weapon");
-                description.push("Size: " + this.item.length);
+                description.push("Size: " + this.item.length/16);
             }
+            description.push("Damage: " + this.item.damage);
             description.push("Cooldown: " + this.item.cooldown);
         }
         var height = 80 + description.length*25;

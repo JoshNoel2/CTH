@@ -15,7 +15,8 @@ class Sword extends MeleeWeapon {
             new Sprite("Graphics/Items/Sword/Sword_Down.png"), //down sprite
             -20, //start extension
             20, //full extension
-            true, //kills enemies
+            true, //single shot
+            7, //damage
         );
     }
 }

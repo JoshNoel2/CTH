@@ -102,7 +102,7 @@ function getWorld(map, biomesList) {
         for (var x = 0; x != map[y].length; x++) {
             world.sections[y].push(new Section(x, y,
                 getSectionFromKey(map[y][x])[1][Math.floor(Math.random()*getSectionFromKey(map[y][x])[1].length)],
-                 biomesList[y][x]));
+                biomesList[y][x]));
         }
     }
     return world;

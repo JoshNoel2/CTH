@@ -6,7 +6,7 @@ class Mushroom extends HealingItem {
             5, //max stack
             0, //cooldown
             true, //consumable
-            1 //heal
+            10 //heal
         );
     }
 }

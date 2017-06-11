@@ -67,6 +67,7 @@ var biomes = [
         "0", //y level biome can be generated from
         "1", //enemy difficulty in biome
         0, //total instances of biome in world
+        "Graphics/Terrain/Grass/Grass.png", //biome ground
     ],
     [
         "0", //key
@@ -74,6 +75,7 @@ var biomes = [
         "2", //y level biome can be generated from
         "2", //enemy difficulty in biome
         0, //total instances of biome in world
+        "Graphics/Terrain/Grass/Grass.png", //biome ground
     ],
     [
         "1", //key
@@ -81,5 +83,6 @@ var biomes = [
         "2", //y level biome can be generated from
         "1", //enemy difficulty in biome
         0, //total instances of biome in world
-    ]
+        "Graphics/Terrain/Grass/Grass.png", //biome ground
+    ],
 ]

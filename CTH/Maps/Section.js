@@ -57,6 +57,15 @@ class Section {
             loadedSections.push(this);
             // console.log("Loading Section " + this.x + ", " + this.y);
             this.isLoaded = true;
+
+            for (var y1 = 0; y1 != this.map.length + 1; y1++) {
+        		for (var x1 = 0; x1 != this.map[0].split("").length + 1; x1++) {
+                    var x = this.x*this.map[0].length + x1;
+                    var y = this.y*this.map.length + y1;
+                    this.tiles.push(new Tile(x*128, y*128, new Sprite(getBiomeFromKey(this.biome)[5])));
+                }
+            }
+
             for (var y1 = 0; y1 != this.map.length; y1++) {
         		for (var x1 = 0; x1 != this.map[y1].split("").length; x1++) {
 
@@ -68,50 +77,41 @@ class Section {
         			if (key == "p") {
                         player.x = x*128;
                         player.y = y*128;
-                        this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Grass.png")));
+
         			} else if (key == "g") {
-                        this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Grass.png")));
                         this.addBiomeObjects(x, y);
         			} else if (key == "w") {
         				this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Water/Water.png")));
         			} else if (key == "l") {
         				this.hitboxes.push(new Hitbox(x*128, y*128, 32, 128, false, true));
-        				this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Grass.png")));
         				this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Water/WaterLeft.png")));
         			} else if (key == "r") {
         				this.hitboxes.push(new Hitbox(x*128 + 96, y*128, 32, 128, false, true));
-        				this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Grass.png")));
         				this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Water/WaterRight.png")));
         			} else if (key == "u") {
         				this.hitboxes.push(new Hitbox(x*128, y*128, 128, 32, false, true));
-        				this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Grass.png")));
         				this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Water/WaterUp.png")));
         			} else if (key == "d") {
         				this.hitboxes.push(new Hitbox(x*128, y*128 + 96, 128, 32, false, true));
-        				this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Grass.png")));
         				this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Water/WaterDown.png")));
         			} else if (key == "t") {
         				this.hitboxes.push(new Hitbox(x*128, y*128, 32, 128, false, true));
         				this.hitboxes.push(new Hitbox(x*128, y*128, 128, 32, false, true));
-        				this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Grass.png")));
         				this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Water/WaterLeft.png")));
         				this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Water/WaterUp.png")));
         			} else if (key == "y") {
         				this.hitboxes.push(new Hitbox(x*128 + 96, y*128, 32, 128, false, true));
         				this.hitboxes.push(new Hitbox(x*128, y*128, 128, 32, false, true));
-        				this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Grass.png")));
         				this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Water/WaterRight.png")));
         				this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Water/WaterUp.png")));
         			} else if (key == "b") {
         				this.hitboxes.push(new Hitbox(x*128, y*128, 32, 128, false, true));
         				this.hitboxes.push(new Hitbox(x*128, y*128 + 96, 128, 32, false, true));
-        				this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Grass.png")));
         				this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Water/WaterLeft.png")));
         				this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Water/WaterDown.png")));
         			} else if (key == "i") {
         				this.hitboxes.push(new Hitbox(x*128 + 96, y*128, 32, 128, false, true));
         				this.hitboxes.push(new Hitbox(x*128, y*128 + 96, 128, 32, false, true));
-        				this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Grass.png")));
         				this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Water/WaterRight.png")));
         				this.tiles.push(new Tile(x*128, y*128, new Sprite("Graphics/Terrain/Water/WaterDown.png")));
         			}

@@ -15,7 +15,8 @@ class Staff extends MeleeWeapon {
             new Sprite("Graphics/Items/Staff/Staff_Down.png"), //down sprite
             -75, //start extension
             50, //full extension
-            true, //kills enemies
+            false, //single shot
+            12, //damage
         );
     }
 }

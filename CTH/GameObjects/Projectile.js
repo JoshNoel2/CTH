@@ -1,10 +1,11 @@
 class Projectile extends MovingObject {
-    constructor(x, y, width, height, sprite, xvel, yvel, speed, killsEnemies, killsPlayer) {
+    constructor(x, y, width, height, sprite, xvel, yvel, speed, killsEnemies, killsPlayer, damage) {
         super(x, y, width, height, sprite, speed, new Hitbox(x, y, width, height, false, false, "projectile"));
         this.xvel = xvel;
         this.yvel = yvel;
         this.killsEnemies = killsEnemies;
         this.killsPlayer = killsPlayer;
+        this.damage = damage;
     }
     update() {
         super.update();
@@ -19,8 +20,10 @@ class Projectile extends MovingObject {
             this.remove();
         }
         if (object.type == "enemy" && this.killsEnemies) {
-            object.parent.kill();
-            this.remove();
+            if (object.parent.noDamage > object.parent.damageCooldown) {
+                object.parent.damage(this.damage);
+                this.remove();
+            }
         }
     }
 }
